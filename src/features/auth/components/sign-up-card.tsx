@@ -5,6 +5,8 @@ import { Separator } from "@/components/ui/separator";
 import { FaGithub } from "react-icons/fa";
 import { FcGoogle } from "react-icons/fc";
 import { SignInFlow } from "./types";
+import { useState } from "react";
+import { useAuthActions } from "@convex-dev/auth/react";
 interface SignUpCardProps {
     setState(state:SignInFlow):void
 }
@@ -13,6 +15,19 @@ export const SignUpCard = ({setState}:SignUpCardProps) => {
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
     const [email, setEmail] = useState("");
+    const [name,setName]=useState("");
+    const {signIn}=useAuthActions();
+
+    const handleProvider=(value:"google"|"github")=>{
+        signIn(value);};
+        const onPasswordSignUp=(e:React.FormEvent<HTMLFormElement>)=>{
+            e.preventDefault();
+            if(password!=confirmPassword){
+                setError("Passwords Don't Match")
+                return
+            }
+             signIn("password",{name,email,password,flow:"signUp"}).catch(()=>setError("Invalid Credentials"));
+        }
   return <Card className="w-full h-full p-8">
         <CardHeader className="px-0 pt-0">
             <CardTitle>
@@ -24,7 +39,14 @@ export const SignUpCard = ({setState}:SignUpCardProps) => {
             Use Your Email or another Service to continue
         </CardDescription>
         <CardContent className="space-y-5 px-0 pb-0">     
-            <form action="" className="space-y-2.5">
+            <form className="space-y-2.5" onSubmit={onPasswordSignUp}>
+                <Input disabled={false}
+                value={name}
+                onChange={(e)=>{setName(e.target.value)}}
+                type="name"
+                placeholder="Name"
+                required
+                />
                 <Input disabled={false}
                 value={email}
                 onChange={(e)=>{setEmail(e.target.value)}}
@@ -46,18 +68,21 @@ export const SignUpCard = ({setState}:SignUpCardProps) => {
                 placeholder="Confirm Password"
                 required
                 />
-                <Button type="submit" className="w-full" size={"lg"} disabled>
+                <Button type="submit" className="w-full" size={"lg"}>
                     Continue
                 </Button>
             </form>
             <Separator />
             <div className="flex flex-col gap-y-2.5">
-                <Button disabled onClick={() => {}} variant={"outline"} size={"lg"} className="w-full relative">
+            <Button  onClick={() => {handleProvider("google")}} variant={"outline"} size={"lg"} className="w-full 
+                relative"
+                >
                     
                     <FcGoogle className="size-5 absolute left-4 top-1/2 -translate-y-1/2" />    
                     Continue with Google
                 </Button>
-                <Button disabled onClick={() => {}} variant={"outline"} size={"lg"} className="w-full relative">
+                <Button onClick={() => {handleProvider("github")}} variant={"outline"} size={"lg"} className="w-full relative">
+         
                     
                     <FaGithub className="size-5 absolute left-4 top-1/2 -translate-y-1/2" />    
                     Continue with Github
