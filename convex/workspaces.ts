@@ -6,16 +6,17 @@ export const create = mutation({
     name: v.string(),
   },
   handler: async (ctx, args) => {
-    const userId = await auth.getUserId(ctx);
-    if (userId === null) {
-      return null;
+    const userId=await auth.getUserId(ctx)
+    if(userId===null){
+      throw new Error("Unauthorized")
     }
-    const workspace = await ctx.db.insert("workspaces", {
+    const workspaceId = await ctx.db.insert("workspaces", {
       name: args.name,
       userId: userId,
       joinCode: "123456",
     });
-    return {workspace};
+
+    return workspaceId;
   },
 });
 
@@ -25,3 +26,15 @@ export const get = query({
     return await ctx.db.query("workspaces").collect();
   },
 });
+
+export const getById=query({
+    args:{id:v.id("workspaces")},
+    handler: async (ctx,args) => {
+        const userId=await auth.getUserId(ctx)
+        if(userId===null){
+          throw new Error("Unauthorized")
+        }
+        return await ctx.db.get(args.id)
+    }
+})
+

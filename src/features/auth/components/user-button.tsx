@@ -6,8 +6,8 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@radix-ui/react-dropdown-menu";
-import { UserCurrentUser } from "../hooks/use-current-user";
 import { Loader, LogOut } from "lucide-react";
+import { UserCurrentUser } from "../api/use-current-user";
 export const UserButton = () => {
   const { data, isLoading } = UserCurrentUser();
   if (isLoading) {

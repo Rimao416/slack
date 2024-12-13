@@ -26,13 +26,16 @@ export const useCreateWorkspace=()=>{
     // const [isSettled,setIsSettled]=useState(false)
 
     const mutation=useMutation(api.workspaces.create);
+   
     const mutate=useCallback(async(values:RequestType,options?:Options)=>{
+        console.log(values)
         try {
             setData(null)
             setError(undefined)
             setState("pending")
             
             const response=await mutation(values)
+            console.log(response)
             options?.onSuccess?.(response as ResponseType) 
             return response
         } catch (error){
@@ -41,7 +44,7 @@ export const useCreateWorkspace=()=>{
                 throw error
             }
         }finally{
-            setState("settled")
+            setState("settled") 
 
             options?.onSettled?.()
         }

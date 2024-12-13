@@ -12,28 +12,34 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useCreateWorkspace } from "../api/use-create-workspace";
 import { useState } from "react";
-import {toast} from "sonner"
+import { toast } from "sonner";
 
 export const CreateWorkspaceModal = () => {
   const router = useRouter();
-  const[name,setName]=useState("")
+  const [name, setName] = useState("");
   const [open, setOpen] = useCreateWorkspaceModal();
   const handleClose = () => setOpen(false);
-  const { mutate,isPending } = useCreateWorkspace(); // Assume mutate is a function returned by the hook
+  const { mutate, isPending } = useCreateWorkspace(); // Assume mutate is a function returned by the hook
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    mutate({name},{
-      onSuccess(id) {
-        toast.success("Workspace created successfully")
-        router.push(`/workspaces/${id}`);
-      },
-      onError() {
-        handleClose();
-      },
-      onSettled: () => {},
-
-    })
+    console.log(name);
+    mutate(
+      { name },
+      {
+        onSuccess(data) {
+          console.log(data);
+          toast.success("Workspace created successfully");
+          if (data) {
+            router.push(`/workspaces/${data}`);
+          }
+        },
+        onError() {
+          handleClose();
+        },
+        onSettled: () => {},
+      }
+    );
     // try {
     //   const data = mutate(
     //     {
@@ -65,12 +71,13 @@ export const CreateWorkspaceModal = () => {
         </DialogHeader>
         <form onSubmit={handleSubmit}>
           <Input
-          value={name}
-          onChange={(e)=>setName(e.target.value)}
-          type="text"
-          required
-          autoFocus
-          placeholder="Workspace Name" />
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            type="text"
+            required
+            autoFocus
+            placeholder="Workspace Name"
+          />
           <Button>Create</Button>
         </form>
       </DialogContent>

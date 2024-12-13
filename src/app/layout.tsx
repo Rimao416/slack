@@ -17,7 +17,7 @@ export default function RootLayout({
             <Toaster/>
             <Modals/>{children}
           </ConvexClientProvider>
-        </body>
+        </body>    
       </html>
     </ConvexAuthNextjsServerProvider>
   );
